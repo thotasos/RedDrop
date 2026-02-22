@@ -9,7 +9,7 @@ export const DEFAULT_SUBREDDITS = [
 
 // Reddit API
 export const REDDIT_API_BASE = 'https://www.reddit.com'
-export const POSTS_PER_SUBREDDIT = 50
+export const POSTS_PER_SUBREDDIT = 5
 
 // Ollama defaults
 export const DEFAULT_OLLAMA_URL = 'http://localhost:11434'
@@ -19,7 +19,10 @@ export const DEFAULT_OLLAMA_MODEL = 'llama3'
 export const STORAGE_KEYS = {
   SUBREDDITS: 'reddrop_subreddits',
   OLLAMA_URL: 'reddrop_ollama_url',
-  OLLAMA_MODEL: 'reddrop_ollama_model'
+  OLLAMA_MODEL: 'reddrop_ollama_model',
+  POSTS: 'reddrop_posts',
+  POSTS_TIMESTAMP: 'reddrop_posts_timestamp',
+  SUMMARIES: 'reddrop_summaries'
 }
 
 // UI Constants
