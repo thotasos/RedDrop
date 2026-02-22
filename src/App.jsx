@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PostCard } from './components/PostCard'
 import { SummaryPanel } from './components/SummaryPanel'
 import { SettingsModal } from './components/SettingsModal'
@@ -8,30 +8,45 @@ import { useOllama } from './hooks/useOllama'
 import './App.css'
 
 function App() {
-  const { currentPost, loading, error, isRefreshing, getNextPost, refresh } = useRedditFeed()
-  const { summaries, generateAllSummaries, resetSummaries } = useOllama()
+  const {
+    posts, pendingPosts, currentPost,
+    loading, error, isRefreshing, lastFetchTime,
+    activateNewBatch, getNextPost, refresh
+  } = useRedditFeed()
+  const { summaries, isSummarizing, summarizeAllPosts, loadSummariesForPost } = useOllama()
   const [showSummary, setShowSummary] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
 
+  // Route to the correct summarization path whenever a fetch completes
+  useEffect(() => {
+    if (lastFetchTime === 0) return
+
+    if (pendingPosts.length > 0) {
+      // 30-min background refresh: summarize pending batch, then atomically swap UI
+      summarizeAllPosts(pendingPosts, activateNewBatch)
+    } else if (posts.length > 0 && currentPost) {
+      // Initial startup fetch: show posts immediately, summarize with current post first
+      const prioritized = [currentPost, ...posts.filter(p => p.id !== currentPost.id)]
+      summarizeAllPosts(prioritized)
+    }
+  }, [lastFetchTime]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // When the user navigates to a different post, load its cached summaries.
+  useEffect(() => {
+    if (currentPost) {
+      loadSummariesForPost(currentPost.id)
+    }
+  }, [currentPost?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleNextPost = () => {
-    resetSummaries()
     getNextPost()
   }
 
-  const handleSummarize = async () => {
+  const handleSummarize = () => {
     setShowSummary(true)
-    // Only generate if not already loaded
-    if (!summaries.article.content && !summaries.article.loading) {
-      await generateAllSummaries(currentPost)
-    }
-  }
-
-  const handleCloseSummary = () => {
-    setShowSummary(false)
   }
 
   const handleSettingsSave = () => {
-    resetSummaries()
     refresh()
   }
 
@@ -71,6 +86,7 @@ function App() {
             post={currentPost}
             onNext={handleNextPost}
             onSummarize={handleSummarize}
+            isSummarizing={isSummarizing}
             isRefreshing={isRefreshing}
           />
         )}
@@ -86,8 +102,9 @@ function App() {
       <SummaryPanel
         post={currentPost}
         isOpen={showSummary}
-        onClose={handleCloseSummary}
+        onClose={() => setShowSummary(false)}
         summaries={summaries}
+        isSummarizing={isSummarizing}
       />
 
       <SettingsModal
