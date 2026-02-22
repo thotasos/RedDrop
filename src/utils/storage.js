@@ -36,3 +36,62 @@ export function setOllamaConfig(url, model) {
   localStorage.setItem(STORAGE_KEYS.OLLAMA_URL, url)
   localStorage.setItem(STORAGE_KEYS.OLLAMA_MODEL, model)
 }
+
+export function getCachedPosts() {
+  try {
+    const timestamp = localStorage.getItem(STORAGE_KEYS.POSTS_TIMESTAMP)
+    const posts = localStorage.getItem(STORAGE_KEYS.POSTS)
+    if (!timestamp || !posts) return null
+    return { posts: JSON.parse(posts), timestamp: Number(timestamp) }
+  } catch {
+    return null
+  }
+}
+
+export function setCachedPosts(posts) {
+  try {
+    localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts))
+    localStorage.setItem(STORAGE_KEYS.POSTS_TIMESTAMP, Date.now().toString())
+  } catch (e) {
+    console.warn('Failed to cache posts:', e)
+  }
+}
+
+export function getSummary(postId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUMMARIES) || '{}')
+    return all[postId] || null
+  } catch {
+    return null
+  }
+}
+
+export function setSummary(postId, summaries) {
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUMMARIES) || '{}')
+    all[postId] = summaries
+    localStorage.setItem(STORAGE_KEYS.SUMMARIES, JSON.stringify(all))
+  } catch (e) {
+    console.warn('Failed to cache summary:', e)
+  }
+}
+
+export function clearPostsAndSummaries() {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.POSTS)
+    localStorage.removeItem(STORAGE_KEYS.POSTS_TIMESTAMP)
+    localStorage.removeItem(STORAGE_KEYS.SUMMARIES)
+  } catch (e) {
+    console.warn('Failed to clear cache:', e)
+  }
+}
+
+export function replacePostsAndSummaries(posts, summariesDict) {
+  try {
+    localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts))
+    localStorage.setItem(STORAGE_KEYS.POSTS_TIMESTAMP, Date.now().toString())
+    localStorage.setItem(STORAGE_KEYS.SUMMARIES, JSON.stringify(summariesDict))
+  } catch (e) {
+    console.warn('Failed to replace posts/summaries:', e)
+  }
+}
