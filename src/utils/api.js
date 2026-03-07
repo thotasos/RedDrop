@@ -74,7 +74,7 @@ export async function fetchPostComments(subreddit, postId) {
       return []
     }
 
-    return parseComments(commentsData)
+    return parseComments(commentsData.data)
   } catch (error) {
     console.error('Error fetching comments:', error.message)
     return []

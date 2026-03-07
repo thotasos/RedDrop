@@ -35,7 +35,7 @@ export function SummaryPanel({ post, isOpen, onClose, summaries }) {
                 <p>{summaries.article.content}</p>
               )}
               {!summaries.article.loading && !summaries.article.content && !summaries.article.error && (
-                <p className="summary-panel__placeholder">Click to generate summary</p>
+                <p className="summary-panel__placeholder">Preparing summary…</p>
               )}
             </div>
           </div>
@@ -56,7 +56,7 @@ export function SummaryPanel({ post, isOpen, onClose, summaries }) {
                 <p>{summaries.sentiment.content}</p>
               )}
               {!summaries.sentiment.loading && !summaries.sentiment.content && !summaries.sentiment.error && (
-                <p className="summary-panel__placeholder">Click to generate summary</p>
+                <p className="summary-panel__placeholder">Preparing summary…</p>
               )}
             </div>
           </div>
@@ -77,7 +77,7 @@ export function SummaryPanel({ post, isOpen, onClose, summaries }) {
                 <p>{summaries.contrarian.content}</p>
               )}
               {!summaries.contrarian.loading && !summaries.contrarian.content && !summaries.contrarian.error && (
-                <p className="summary-panel__placeholder">Click to generate summary</p>
+                <p className="summary-panel__placeholder">Preparing summary…</p>
               )}
             </div>
           </div>
