@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedDrop</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .slide {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .slide-header {
+      background: #1e3a5f;
+      padding: 2rem 3rem 1.5rem;
+      border-bottom: 3px solid #38bdf8;
+    }
+    .slide-header h1 { font-size: 2.2rem; font-weight: 700; color: #f8fafc; letter-spacing: -0.03em; }
+    .slide-header .tagline { font-size: 1rem; color: #7dd3fc; margin-top: 0.3rem; font-weight: 500; }
+    .badge-row { display: flex; gap: 0.75rem; margin-top: 0.75rem; }
+    .badge {
+      background: #38bdf8; color: #0f172a; font-size: 0.7rem; font-weight: 700;
+      padding: 0.2rem 0.7rem; border-radius: 999px; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .badge.alt { background: #059669; color: white; }
+    .badge.alt2 { background: #d97706; color: white; }
+    .slide-body { display: grid; grid-template-columns: 1fr 1fr 1fr; flex: 1; }
+    .col { padding: 1.75rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .col + .col { border-left: 1px solid #334155; }
+    .col-title {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #64748b; padding-bottom: 0.5rem; border-bottom: 1px solid #334155;
+    }
+    .pipeline-step { display: flex; align-items: flex-start; gap: 0.6rem; }
+    .step-num {
+      background: #38bdf8; color: #0f172a; width: 1.4rem; height: 1.4rem;
+      border-radius: 50%; font-size: 0.65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .step-label { font-size: 0.8rem; font-weight: 600; color: #f1f5f9; }
+    .step-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; margin-top: 0.1rem; }
+    .feature-list { font-size: 0.72rem; color: #94a3b8; line-height: 1.8; list-style: none; padding: 0; }
+    .feature-list li::before { content: "▸"; color: #38bdf8; margin-right: 0.4rem; }
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tech-tag {
+      display: inline-block; background: #1e293b; border: 1px solid #334155;
+      color: #cbd5e1; font-size: 0.68rem; font-weight: 600;
+      padding: 0.2rem 0.55rem; border-radius: 4px; font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .output-tree {
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.7rem; color: #94a3b8; line-height: 1.7;
+      background: #0f172a; border-radius: 8px; padding: 0.9rem 1.1rem;
+      border: 1px solid #334155;
+    }
+    .output-tree .folder { color: #60a5fa; }
+    .output-tree .file   { color: #86efac; }
+    .output-tree .dim    { color: #475569; }
+    .slide-footer {
+      background: #0f172a; padding: 0.9rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #1e293b;
+    }
+    .footer-cmd {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem;
+      color: #38bdf8; background: #1e293b; padding: 0.45rem 1rem;
+      border-radius: 6px; border: 1px solid #334155;
+    }
+    .footer-note { font-size: 0.65rem; color: #475569; font-style: italic; }
+  </style>
+</head>
+<body>
+<div class="slide">
+  <div class="slide-header">
+    <h1>RedDrop</h1>
+    <div class="tagline">Random Reddit posts with AI-powered Ollama summaries</div>
+    <div class="badge-row">
+      <span class="badge">Local AI</span>
+      <span class="badge alt">Random Feed</span>
+      <span class="badge alt2">3 Summary Types</span>
+      <span class="badge">Dark Mode</span>
+    </div>
+  </div>
+  <div class="slide-body">
+    <div class="col">
+      <div class="col-title">Pipeline</div>
+      <div class="pipeline-step">
+        <span class="step-num">1</span>
+        <div>
+          <div class="step-label">Fetch Reddit API</div>
+          <div class="step-desc">Pull random post from configured subreddits</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <span class="step-num">2</span>
+        <div>
+          <div class="step-label">Display Post</div>
+          <div class="step-desc">One post at a time with title, content, comments</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <span class="step-num">3</span>
+        <div>
+          <div class="step-label">AI Summarize</div>
+          <div class="step-desc">Three Ollama-powered summary types</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <span class="step-num">4</span>
+        <div>
+          <div class="step-label">Swipe/Refresh</div>
+          <div class="step-desc">Navigate posts or auto-refresh every 30 min</div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-title">Key Features</div>
+      <ul class="feature-list">
+        <li>One random post displayed at a time</li>
+        <li>Article Summary: post + top comments overview</li>
+        <li>Community Sentiment: majority opinion</li>
+        <li>Contrarian View: dissenting viewpoints</li>
+        <li>Configurable subreddit list</li>
+        <li>Dark mode by default</li>
+        <li>Mobile swipe navigation</li>
+        <li>Auto-refresh every 30 minutes</li>
+      </ul>
+      <div class="col-title" style="margin-top: 0.5rem">Stack</div>
+      <div class="tech-grid">
+        <span class="tech-tag">React 19</span>
+        <span class="tech-tag">Vite</span>
+        <span class="tech-tag">Ollama</span>
+        <span class="tech-tag">llama3</span>
+        <span class="tech-tag">localStorage</span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-title">Output</div>
+      <div class="output-tree">
+<span class="folder">Post Display/</span>
+  <span class="file">Post title & content</span>
+  <span class="file">Top comments</span>
+<span class="folder">AI Summaries/</span>
+  <span class="dim">Article Summary</span>
+  <span class="dim">Community Sentiment</span>
+  <span class="dim">Contrarian View</span>
+      </div>
+      <div class="col-title" style="margin-top: 0.5rem">Includes</div>
+      <div class="step-desc" style="line-height: 1.6">
+        <span style="color:#38bdf8">▸</span> Post score and comments<br>
+        <span style="color:#38bdf8">▸</span> Subreddit attribution<br>
+        <span style="color:#38bdf8">▸</span> Ollama-powered insights<br>
+        <span style="color:#38bdf8">▸</span> Swipe/refresh navigation
+      </div>
+      <div class="col-title" style="margin-top: 0.5rem">Settings</div>
+      <div class="step-desc" style="font-family: 'SF Mono', monospace; font-size: 0.65rem">
+        Subreddit list, Ollama URL, model
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <code class="footer-cmd">npm run dev</code>
+    <span class="footer-note">Reddit digest at localhost:5194 — configure subreddits in settings</span>
+  </div>
+</div>
+</body>
+</html>
